@@ -146,32 +146,26 @@
         };
 
         function initThreeJS() {
-            // Scene
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0xf8fafc); // Tailwind gray-50
+            scene.background = new THREE.Color(0xf8fafc); 
 
-            // Camera
             camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 10000);
             camera.position.set(100, 100, 100);
 
-            // Renderer
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.shadowMap.enabled = true;
             container.appendChild(renderer.domElement);
 
-            // Controls
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
 
-            // Environment / Grid
             const gridHelper = new THREE.GridHelper(500, 50, 0x888888, 0xd1d5db);
             gridHelper.position.y = -0.1;
             scene.add(gridHelper);
 
-            // Lights
-            const ambientLight = new THREE.AmbientLight(0x404040, 1.5); // Soft white light
+            const ambientLight = new THREE.AmbientLight(0x404040, 1.5); 
             scene.add(ambientLight);
 
             const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -183,7 +177,6 @@
             fillLight.position.set(-100, 0, -50);
             scene.add(fillLight);
 
-            // Handle Resize
             window.addEventListener('resize', onWindowResize, false);
         }
 
@@ -239,7 +232,6 @@
             if (files.length === 0) return;
             const file = files[0];
             
-            // Basic validation
             const extension = file.name.split('.').pop().toLowerCase();
             if (extension !== 'stl') {
                 showToast("Only STL files are supported currently.", true);
@@ -263,16 +255,14 @@
                 const loader = new THREE.STLLoader();
                 const geometry = loader.parse(arrayBuffer);
                 
-                // Remove existing mesh if any
                 if (currentMesh) {
                     scene.remove(currentMesh);
                     currentMesh.geometry.dispose();
                     currentMesh.material.dispose();
                 }
 
-                // Create Material & Mesh
                 const material = new THREE.MeshStandardMaterial({ 
-                    color: 0x3b82f6, // Tailwind blue-600
+                    color: 0x3b82f6, 
                     roughness: 0.4,
                     metalness: 0.1
                 });
@@ -280,27 +270,22 @@
                 currentMesh.castShadow = true;
                 currentMesh.receiveShadow = true;
 
-                // Geometry Calculations
                 geometry.computeBoundingBox();
                 geometry.computeBoundingSphere();
                 
-                // Calculate Dimensions
                 const box = geometry.boundingBox;
                 const size = new THREE.Vector3();
                 box.getSize(size);
                 
                 modelDimensions = { x: size.x, y: size.y, z: size.z };
                 
-                // Calculate Volume (Volume in mm3, convert to cm3)
                 const volumeMm3 = calculateVolume(geometry);
                 modelVolumeCm3 = volumeMm3 / 1000;
 
                 updateUIStats();
 
-                // Center the geometry visually
                 geometry.center();
                 
-                // Adjust Camera to fit object
                 const radius = geometry.boundingSphere.radius;
                 camera.position.set(radius * 1.5, radius * 1.5, radius * 2);
                 controls.target.set(0, 0, 0);
@@ -308,7 +293,6 @@
 
                 scene.add(currentMesh);
                 
-                // Enable Form Submit
                 document.getElementById('submit-btn').disabled = false;
             } catch (err) {
                 console.error("Error parsing STL:", err);
@@ -319,13 +303,11 @@
         }
 
         function calculateVolume(geometry) {
-            // Three.js STLLoader returns BufferGeometry which is typically non-indexed for STL
             let volume = 0;
             let position = geometry.attributes.position;
             let p1 = new THREE.Vector3(), p2 = new THREE.Vector3(), p3 = new THREE.Vector3();
             
             if (geometry.index) {
-                // Handle indexed geometry
                 let indices = geometry.index.array;
                 for (let i = 0; i < indices.length; i += 3) {
                     p1.fromBufferAttribute(position, indices[i]);
@@ -334,7 +316,6 @@
                     volume += signedVolumeOfTriangle(p1, p2, p3);
                 }
             } else {
-                // Handle non-indexed geometry
                 for (let i = 0; i < position.count; i += 3) {
                     p1.fromBufferAttribute(position, i);
                     p2.fromBufferAttribute(position, i + 1);
@@ -365,34 +346,60 @@
                 e.preventDefault();
                 if (!currentFile) return;
 
+                // Disable button and show spinner
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div> Processing...';
-
-                const formData = new FormData();
-                formData.append('file', currentFile);
-                formData.append('name', document.getElementById('name').value);
-                formData.append('email', document.getElementById('email').value);
-                formData.append('phone', document.getElementById('phone').value);
-                formData.append('material', document.getElementById('material').value);
-                formData.append('comments', document.getElementById('comments').value);
-                formData.append('dimensions', JSON.stringify(modelDimensions));
-                formData.append('volume', modelVolumeCm3.toFixed(2));
-
+                
                 try {
-                    // 1. Simulate a realistic 1.5-second network delay
-                    await new Promise(resolve => setTimeout(resolve, 1500)); 
-                    
-                    // 2. Pretend the server responded perfectly
-                    showToast("Quote requested successfully!");
-                    form.reset();
-                    
-                    // (Optional) Log the data to your console so you can see what WOULD have been sent
-                    console.log("Data ready for backend:", Object.fromEntries(formData));
+                    let fileData = null;
+                    let fileName = currentFile.name;
 
-                } catch(err) {
-                    showToast("Submission failed.", true);
+                    submitBtn.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div> Encoding 3D File...';
+
+                    // Convert file to base64
+                    fileData = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.readAsDataURL(currentFile);
+                    });
+
+                    submitBtn.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div> Sending to Sheet...';
+
+                    // Format dimensions clearly for the spreadsheet
+                    const dimString = `X: ${modelDimensions.x.toFixed(2)}, Y: ${modelDimensions.y.toFixed(2)}, Z: ${modelDimensions.z.toFixed(2)}`;
+
+                    const payload = {
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                        phone: document.getElementById('phone').value,
+                        material: document.getElementById('material').value,
+                        comments: document.getElementById('comments').value,
+                        dimensions: dimString,
+                        volume: modelVolumeCm3.toFixed(2),
+                        fileData: fileData,
+                        fileName: fileName
+                    };
+
+                    // ⚠️ PASTE YOUR GOOGLE WEB APP URL HERE:
+                    const webAppUrl = "https://script.google.com/macros/s/AKfycbwYuJiMDgxMll517mXmEIH-yUnvax_og9Jn4Amw2ouL0rOBCYYb9TPMOMOn--d7XYVcNQ/exec";
+
+                    const response = await fetch(webAppUrl, {
+                        method: "POST",
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.status === "success") {
+                        showToast("Quote requested successfully!");
+                        form.reset();
+                    } else {
+                        showToast("Server error: " + result.message, true);
+                    }
+
+                } catch (err) {
+                    console.error("Submission Error: ", err);
+                    showToast("Submission failed. Check developer console.", true);
                 } finally {
-                    // Reset the button
                     submitBtn.innerText = "Submit for Quote";
                     submitBtn.disabled = false;
                 }
