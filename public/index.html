@@ -379,21 +379,20 @@
                 formData.append('volume', modelVolumeCm3.toFixed(2));
 
                 try {
-                    const response = await fetch('/api/quote', {
-                        method: 'POST',
-                        body: formData
-                    });
+                    // 1. Simulate a realistic 1.5-second network delay
+                    await new Promise(resolve => setTimeout(resolve, 1500)); 
                     
-                    if(response.ok) {
-                        showToast("Quote requested successfully!");
-                        form.reset();
-                    } else {
-                        const errorData = await response.json();
-                        showToast(errorData.error || "Submission failed.", true);
-                    }
+                    // 2. Pretend the server responded perfectly
+                    showToast("Quote requested successfully!");
+                    form.reset();
+                    
+                    // (Optional) Log the data to your console so you can see what WOULD have been sent
+                    console.log("Data ready for backend:", Object.fromEntries(formData));
+
                 } catch(err) {
-                    showToast("Network error. Please try again later.", true);
+                    showToast("Submission failed.", true);
                 } finally {
+                    // Reset the button
                     submitBtn.innerText = "Submit for Quote";
                     submitBtn.disabled = false;
                 }
