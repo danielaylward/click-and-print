@@ -382,6 +382,7 @@
 
                 // --- PRODUCTION BACKEND CODE (Uncomment when running with Node.js) ---
                 /*
+                ```javascript
                 const formData = new FormData();
                 formData.append('file', currentFile);
                 formData.append('name', document.getElementById('name').value);
@@ -400,12 +401,18 @@
                     if(response.ok) {
                         showToast("Quote requested successfully!");
                         form.reset();
+                        submitBtn.innerText = "Submit for Quote";
+                        submitBtn.disabled = false;
                     } else {
                         const errorData = await response.json();
                         showToast(errorData.error || "Submission failed.", true);
+                        submitBtn.innerText = "Submit for Quote";
+                        submitBtn.disabled = false;
                     }
                 } catch(err) {
                     showToast("Network error. Please try again later.", true);
+                    submitBtn.innerText = "Submit for Quote";
+                    submitBtn.disabled = false;
                 }
                 */
 
