@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClickandPrint3D Quote Generator</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Three.js and Addons -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
@@ -25,7 +23,6 @@
 </head>
 <body class="text-gray-800 antialiased min-h-screen flex flex-col">
 
-    <!-- Navigation -->
     <nav class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
@@ -39,13 +36,10 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex flex-col lg:flex-row gap-8">
         
-        <!-- Left Column: Upload & 3D Viewer -->
         <div class="w-full lg:w-3/5 flex flex-col gap-6">
             
-            <!-- Drag and Drop Zone -->
             <div id="drop-zone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center transition-colors duration-200 bg-white hover:bg-gray-50 flex flex-col items-center justify-center min-h-[200px]">
                 <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -60,7 +54,6 @@
                 <p class="text-xs text-gray-500 mt-2">Currently supporting STL files up to 50MB</p>
             </div>
 
-            <!-- 3D Viewer Container -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden relative flex-grow min-h-[400px]">
                 <div id="viewer-overlay" class="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
                     <p class="text-gray-500 font-medium">Upload a model to preview</p>
@@ -72,10 +65,8 @@
             </div>
         </div>
 
-        <!-- Right Column: Details & Form -->
         <div class="w-full lg:w-2/5 flex flex-col gap-6">
             
-            <!-- Metadata Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h3 class="text-lg font-medium text-gray-900 border-b pb-2 mb-4">Model Specifications</h3>
                 <div class="grid grid-cols-2 gap-4">
@@ -92,7 +83,6 @@
                 </div>
             </div>
 
-            <!-- User Form -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex-grow">
                 <h3 class="text-lg font-medium text-gray-900 border-b pb-2 mb-4">Request a Quote</h3>
                 <form id="quote-form" class="space-y-4">
@@ -127,14 +117,12 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-white border-t border-gray-200 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center">
             <p class="text-sm text-gray-500">Contact us at: <a href="mailto:danielaylward14@gmail.com" class="text-blue-600 hover:text-blue-500 font-medium">danielaylward14@gmail.com</a></p>
         </div>
     </footer>
 
-    <!-- Notification Toast -->
     <div id="toast" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center z-50">
         <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
         <span id="toast-message">Quote submitted successfully!</span>
@@ -380,14 +368,12 @@
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div> Processing...';
 
-                // --- PRODUCTION BACKEND CODE (Uncomment when running with Node.js) ---
-                /*
-                ```javascript
                 const formData = new FormData();
                 formData.append('file', currentFile);
                 formData.append('name', document.getElementById('name').value);
                 formData.append('email', document.getElementById('email').value);
                 formData.append('phone', document.getElementById('phone').value);
+                formData.append('material', document.getElementById('material').value);
                 formData.append('comments', document.getElementById('comments').value);
                 formData.append('dimensions', JSON.stringify(modelDimensions));
                 formData.append('volume', modelVolumeCm3.toFixed(2));
@@ -401,34 +387,16 @@
                     if(response.ok) {
                         showToast("Quote requested successfully!");
                         form.reset();
-                        submitBtn.innerText = "Submit for Quote";
-                        submitBtn.disabled = false;
                     } else {
                         const errorData = await response.json();
                         showToast(errorData.error || "Submission failed.", true);
-                        submitBtn.innerText = "Submit for Quote";
-                        submitBtn.disabled = false;
                     }
                 } catch(err) {
                     showToast("Network error. Please try again later.", true);
+                } finally {
                     submitBtn.innerText = "Submit for Quote";
                     submitBtn.disabled = false;
                 }
-                */
-
-                // --- MOCK SUBMISSION FOR PREVIEW ENVIRONMENT ---
-                setTimeout(() => {
-                    console.log("Mock submission details:");
-                    console.log("Name:", document.getElementById('name').value);
-                    console.log("Material:", document.getElementById('material').value);
-                    console.log("File:", currentFile.name);
-                    console.log("Volume:", modelVolumeCm3.toFixed(2));
-                    
-                    showToast("Quote requested successfully! (Simulated)");
-                    form.reset();
-                    submitBtn.innerText = "Submit for Quote";
-                    submitBtn.disabled = false;
-                }, 1500);
             });
         }
 
