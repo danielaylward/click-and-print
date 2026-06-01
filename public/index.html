@@ -478,7 +478,41 @@
                 toast.classList.add('translate-y-20', 'opacity-0');
             }, 3000);
         }
+<script>
+    // 1. REMOVE any existing calls to initThreeJS() outside of functions
+    
+    // 2. ADD THIS instead:
+    window.onload = function() {
+        const userAccepted = window.confirm(
+            "Terms and Conditions\n\n" +
+            "1. You confirm ownership of these 3D files.\n" +
+            "2. No restricted or illegal items permitted.\n" +
+            "3. Pricing is an automated estimate.\n\n" +
+            "Click 'OK' to accept and proceed."
+        );
 
+        if (userAccepted) {
+            // This starts the 3D viewer only after clicking OK
+            initThreeJS(); 
+        } else {
+            // This replaces the entire page content if they click Cancel
+            document.body.innerHTML = `
+                <div style="display:flex; height:100vh; align-items:center; justify-content:center; text-align:center; font-family:sans-serif;">
+                    <div>
+                        <h2>Access Denied</h2>
+                        <p>You must accept the terms to use the Quoter.</p>
+                        <button onclick="window.location.reload()">Refresh to try again</button>
+                    </div>
+                </div>
+            `;
+        }
+    };
+
+    // Keep all your other functions (initThreeJS, handleFiles, etc.) below this
+    function initThreeJS() {
+       // ... your existing code ...
+    }
+</script>
     </script>
 </body>
 </html>
