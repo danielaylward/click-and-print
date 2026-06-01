@@ -8,13 +8,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         #canvas-container { width: 100%; height: 100%; min-height: 400px; cursor: grab; }
         #canvas-container:active { cursor: grabbing; }
         .drag-active { border-color: #3b82f6; background-color: #eff6ff; }
-        /* Custom scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -46,12 +46,12 @@
                 </svg>
                 <div class="mt-4 flex text-sm text-gray-600">
                     <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                        <span>Upload a file</span>
-                        <input id="file-upload" name="file-upload" type="file" class="sr-only" accept=".stl">
+                        <span>Upload 3D File</span>
+                        <input id="file-upload" name="file-upload" type="file" class="sr-only" accept=".stl,.obj">
                     </label>
                     <p class="pl-1">or drag and drop</p>
                 </div>
-                <p class="text-xs text-gray-500 mt-2">Currently supporting STL files up to 50MB</p>
+                <p class="text-xs text-gray-500 mt-2">Currently supporting STL and OBJ files up to 50MB</p>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden relative flex-grow min-h-[400px]">
@@ -86,27 +86,55 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex-grow">
                 <h3 class="text-lg font-medium text-gray-900 border-b pb-2 mb-4">Request a Quote</h3>
                 <form id="quote-form" class="space-y-4">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                        <input type="text" id="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <input type="text" id="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Phone (Optional)</label>
+                            <input type="tel" id="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                        </div>
                     </div>
+
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
                         <input type="email" id="email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
                     </div>
+
                     <div>
-                        <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number (Optional)</label>
-                        <input type="tel" id="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                        <label for="address" class="block text-sm font-medium text-gray-700">Address (For Postage Estimation)</label>
+                        <textarea id="address" required rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"></textarea>
                     </div>
+
                     <div>
-                        <label for="material" class="block text-sm font-medium text-gray-700">Material</label>
-                        <select id="material" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
-                            <option value="PLA">PLA</option>
-                        </select>
+                        <label for="designLink" class="block text-sm font-medium text-gray-700">Link to Design (Optional)</label>
+                        <input type="url" id="designLink" placeholder="Thingiverse, Printables, etc." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
                     </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
+                            <input type="number" id="quantity" min="1" value="1" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                        </div>
+                        <div class="col-span-1">
+                            <label for="material" class="block text-sm font-medium text-gray-700">Material</label>
+                            <select id="material" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
+                                <option value="PLA">PLA</option>
+                            </select>
+                        </div>
+                        <div class="col-span-1">
+                            <label for="color" class="block text-sm font-medium text-gray-700">Colour</label>
+                            <select id="color" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
+                                <option value="White">White</option>
+                                <option value="Blue">Blue</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div>
-                        <label for="comments" class="block text-sm font-medium text-gray-700">Special Requests</label>
-                        <textarea id="comments" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"></textarea>
+                        <label for="comments" class="block text-sm font-medium text-gray-700">Special Requests / Notes</label>
+                        <textarea id="comments" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"></textarea>
                     </div>
                     
                     <button type="submit" id="submit-btn" disabled class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
@@ -116,12 +144,6 @@
             </div>
         </div>
     </main>
-
-    <footer class="bg-white border-t border-gray-200 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center">
-            <p class="text-sm text-gray-500">Contact us at: <a href="mailto:danielaylward14@gmail.com" class="text-blue-600 hover:text-blue-500 font-medium">danielaylward14@gmail.com</a></p>
-        </div>
-    </footer>
 
     <div id="toast" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center z-50">
         <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -233,8 +255,8 @@
             const file = files[0];
             
             const extension = file.name.split('.').pop().toLowerCase();
-            if (extension !== 'stl') {
-                showToast("Only STL files are supported currently.", true);
+            if (extension !== 'stl' && extension !== 'obj') {
+                showToast("Only STL and OBJ files are supported.", true);
                 return;
             }
 
@@ -245,20 +267,15 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const contents = e.target.result;
-                loadSTL(contents);
+                loadModel(contents, extension);
             };
             reader.readAsArrayBuffer(file);
         }
 
-        function loadSTL(arrayBuffer) {
+        function loadModel(arrayBuffer, extension) {
             try {
-                const loader = new THREE.STLLoader();
-                const geometry = loader.parse(arrayBuffer);
-                
                 if (currentMesh) {
                     scene.remove(currentMesh);
-                    currentMesh.geometry.dispose();
-                    currentMesh.material.dispose();
                 }
 
                 const material = new THREE.MeshStandardMaterial({ 
@@ -266,28 +283,64 @@
                     roughness: 0.4,
                     metalness: 0.1
                 });
-                currentMesh = new THREE.Mesh(geometry, material);
-                currentMesh.castShadow = true;
-                currentMesh.receiveShadow = true;
 
-                geometry.computeBoundingBox();
-                geometry.computeBoundingSphere();
-                
-                const box = geometry.boundingBox;
+                let boundingBox;
+
+                if (extension === 'stl') {
+                    const loader = new THREE.STLLoader();
+                    const geometry = loader.parse(arrayBuffer);
+                    
+                    currentMesh = new THREE.Mesh(geometry, material);
+                    currentMesh.castShadow = true;
+                    currentMesh.receiveShadow = true;
+
+                    geometry.computeBoundingBox();
+                    boundingBox = geometry.boundingBox;
+                    
+                    const volumeMm3 = calculateVolume(geometry);
+                    modelVolumeCm3 = volumeMm3 / 1000;
+                    
+                    geometry.center();
+
+                } else if (extension === 'obj') {
+                    const text = new TextDecoder().decode(arrayBuffer);
+                    const loader = new THREE.OBJLoader();
+                    currentMesh = loader.parse(text);
+
+                    let totalVolume = 0;
+                    boundingBox = new THREE.Box3();
+
+                    currentMesh.traverse((child) => {
+                        if (child.isMesh) {
+                            child.material = material;
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                            
+                            // OBJ sometimes lacks indices, calculateVolume handles it
+                            totalVolume += calculateVolume(child.geometry);
+                        }
+                    });
+
+                    boundingBox.setFromObject(currentMesh);
+                    modelVolumeCm3 = totalVolume / 1000;
+
+                    // Center the OBJ
+                    const center = new THREE.Vector3();
+                    boundingBox.getCenter(center);
+                    currentMesh.position.sub(center);
+                    
+                    // Recalculate bounding box after centering
+                    boundingBox.setFromObject(currentMesh);
+                }
+
                 const size = new THREE.Vector3();
-                box.getSize(size);
-                
+                boundingBox.getSize(size);
                 modelDimensions = { x: size.x, y: size.y, z: size.z };
-                
-                const volumeMm3 = calculateVolume(geometry);
-                modelVolumeCm3 = volumeMm3 / 1000;
 
                 updateUIStats();
-
-                geometry.center();
                 
-                const radius = geometry.boundingSphere.radius;
-                camera.position.set(radius * 1.5, radius * 1.5, radius * 2);
+                const maxDim = Math.max(size.x, size.y, size.z);
+                camera.position.set(maxDim * 1.5, maxDim * 1.5, maxDim * 2);
                 controls.target.set(0, 0, 0);
                 controls.update();
 
@@ -295,8 +348,8 @@
                 
                 document.getElementById('submit-btn').disabled = false;
             } catch (err) {
-                console.error("Error parsing STL:", err);
-                showToast("Error parsing file. Ensure it is a valid STL.", true);
+                console.error("Error parsing model:", err);
+                showToast("Error parsing file. Ensure it is valid.", true);
             } finally {
                 document.getElementById('loading-spinner').classList.add('hidden');
             }
@@ -346,32 +399,33 @@
                 e.preventDefault();
                 if (!currentFile) return;
 
-                // Disable button and show spinner
                 submitBtn.disabled = true;
                 
                 try {
                     let fileData = null;
                     let fileName = currentFile.name;
 
-                    submitBtn.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div> Encoding 3D File...';
+                    submitBtn.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div> Encoding File...';
 
-                    // Convert file to base64
                     fileData = await new Promise((resolve) => {
                         const reader = new FileReader();
                         reader.onload = () => resolve(reader.result);
                         reader.readAsDataURL(currentFile);
                     });
 
-                    submitBtn.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div> Sending to Sheet...';
+                    submitBtn.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div> Sending...';
 
-                    // Format dimensions clearly for the spreadsheet
                     const dimString = `X: ${modelDimensions.x.toFixed(2)}, Y: ${modelDimensions.y.toFixed(2)}, Z: ${modelDimensions.z.toFixed(2)}`;
 
                     const payload = {
                         name: document.getElementById('name').value,
                         email: document.getElementById('email').value,
                         phone: document.getElementById('phone').value,
+                        address: document.getElementById('address').value,
+                        designLink: document.getElementById('designLink').value,
+                        quantity: document.getElementById('quantity').value,
                         material: document.getElementById('material').value,
+                        color: document.getElementById('color').value,
                         comments: document.getElementById('comments').value,
                         dimensions: dimString,
                         volume: modelVolumeCm3.toFixed(2),
@@ -380,7 +434,7 @@
                     };
 
                     // ⚠️ PASTE YOUR GOOGLE WEB APP URL HERE:
-                    const webAppUrl = "https://script.google.com/macros/s/AKfycbwYuJiMDgxMll517mXmEIH-yUnvax_og9Jn4Amw2ouL0rOBCYYb9TPMOMOn--d7XYVcNQ/exec";
+                    const webAppUrl = "YOUR_GOOGLE_SCRIPT_WEB_APP_URL_HERE";
 
                     const response = await fetch(webAppUrl, {
                         method: "POST",
