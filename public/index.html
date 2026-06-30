@@ -170,6 +170,16 @@
                                 <option value="Yes">Yes</option>
                             </select>
                         </div>
+
+                        </div> <div>
+                        <label for="infill" class="block text-sm font-medium text-gray-700">Infill Density (Internal Strength)</label>
+                        <select id="infill" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
+                            <option value="Unsure">Unsure (Recommend for me)</option>
+                            <option value="15%">15% (Standard / Decorative)</option>
+                            <option value="30%">30% (Sturdy / Functional)</option>
+                            <option value="50%">50% (High Strength)</option>
+                            <option value="100%">100% (Solid / Max Strength)</option>
+                        </select>
                     </div>
 
                     <div id="multicolor-desc-container" class="hidden">
@@ -520,6 +530,7 @@
                         color: colorSelect.value,
                         multicolor: multicolorSelect.value,
                         multicolorDesc: document.getElementById('multicolorDesc').value,
+                        infill: document.getElementById('infill').value,
                         comments: document.getElementById('comments').value,
                         dimensions: currentFile ? `X: ${modelDimensions.x.toFixed(2)}, Y: ${modelDimensions.y.toFixed(2)}, Z: ${modelDimensions.z.toFixed(2)}` : "N/A",
                         volume: currentFile ? modelVolumeCm3.toFixed(2) : "N/A",
