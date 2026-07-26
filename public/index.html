@@ -32,9 +32,9 @@
             <div class="overflow-y-auto flex-grow mb-6 text-sm text-gray-600 space-y-4 pr-2 custom-scrollbar">
                 <p>Welcome to ClickandPrint3D. By accessing and using our quote generation service, you agree to be bound by these terms.</p>
                 <h3 class="font-semibold text-gray-800">1. Intellectual Property</h3>
-                <p>By uploading a 3D model or image, you confirm that you own the intellectual property rights or have obtained necessary permissions. We will not be held liable for any copyright infringements.</p>
+                <p>By uploading a 3D model, you confirm that you own the intellectual property rights or have obtained necessary permissions to print the design. We will not be held liable for any copyright infringements.</p>
                 <h3 class="font-semibold text-gray-800">2. Estimations and Pricing</h3>
-                <p>Calculations provided by this tool are estimates. Final pricing may be subject to manual review based on print time, material usage, and structural requirements.</p>
+                <p>The volume and dimension calculations provided by this tool are estimates. Final pricing may be subject to manual review and adjustments based on material availability, print time, and structural requirements.</p>
                 <h3 class="font-semibold text-gray-800">3. Privacy and Data Handling</h3>
                 <p>Your files and personal information are transmitted securely and will only be used for the purpose of processing your quote and subsequent order.</p>
             </div>
@@ -69,7 +69,7 @@
         </div>
 
         <div class="w-full flex flex-col lg:flex-row gap-8 items-start">
-            <!-- Left Column: Upload & 3D/Image Viewer -->
+            <!-- Left Column: Upload & 3D Viewer -->
             <div class="w-full lg:w-3/5 flex flex-col gap-6">
                 
                 <!-- Drag and Drop Zone -->
@@ -84,7 +84,7 @@
                         </label>
                         <p class="pl-1 pt-1">or drag and drop</p>
                     </div>
-                    <p id="upload-hint" class="text-xs text-gray-500 mt-2">Currently supporting STL files up to 15MB (Optional if providing a Link to Design)</p>
+                    <p id="upload-hint" class="text-xs text-gray-500 mt-2">Currently supporting STL files up to 50MB (Optional if providing a Link to Design)</p>
                 </div>
 
                 <!-- 3D Viewer Container -->
@@ -97,126 +97,126 @@
                     </div>
                     <div id="canvas-container" class="w-full h-full"></div>
                     <!-- Lithophane Image Preview -->
-                    <img id="image-preview" class="absolute inset-0 w-full h-full object-contain p-4 bg-gray-50 z-15 hidden" alt="Preview" />
+                    <img id="image-preview" class="absolute inset-0 w-full h-full object-contain p-4 bg-gray-50 z-15 hidden" />
                 </div>
             </div>
 
             <!-- Right Column: Details & Form -->
-            <div class="w-full lg:w-2/5 flex flex-col gap-6">
-                <!-- Stats Box -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-medium text-gray-900 border-b pb-2 mb-4">Specifications</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                            <p class="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Dimensions (mm)</p>
-                            <p id="dim-x" class="text-sm font-semibold text-gray-800">X: --</p>
-                            <p id="dim-y" class="text-sm font-semibold text-gray-800">Y: --</p>
-                            <p id="dim-z" class="text-sm font-semibold text-gray-800">Z: --</p>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 flex flex-col justify-center">
-                            <p class="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Est. Volume</p>
-                            <p id="volume-display" class="text-2xl font-bold text-blue-600">-- <span class="text-sm font-medium text-gray-500">cm³</span></p>
-                        </div>
+                <h3 class="text-lg font-medium text-gray-900 border-b pb-2 mb-4">Model Specifications</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                        <p class="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Dimensions (mm)</p>
+                        <p id="dim-x" class="text-sm font-semibold text-gray-800">X: --</p>
+                        <p id="dim-y" class="text-sm font-semibold text-gray-800">Y: --</p>
+                        <p id="dim-z" class="text-sm font-semibold text-gray-800">Z: --</p>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 flex flex-col justify-center">
+                        <p class="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Est. Volume</p>
+                        <p id="volume-display" class="text-2xl font-bold text-blue-600">-- <span class="text-sm font-medium text-gray-500">cm³</span></p>
                     </div>
                 </div>
-
-                <!-- User Form -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex-grow">
-                    <h3 class="text-lg font-medium text-gray-900 border-b pb-2 mb-4">Request a Quote</h3>
-                    <form id="quote-form" class="space-y-4">
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="col-span-2 sm:col-span-1">
-                                <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                                <input type="text" id="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
-                            </div>
-                            <div class="col-span-2 sm:col-span-1">
-                                <label for="phone" class="block text-sm font-medium text-gray-700">Phone (Optional)</label>
-                                <input type="tel" id="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                            <input type="email" id="email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
-                        </div>
-
-                        <div>
-                            <label for="address" class="block text-sm font-medium text-gray-700">Address (For Postage Estimation)</label>
-                            <textarea id="address" required rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"></textarea>
-                        </div>
-
-                        <div id="design-link-group">
-                            <label for="designLink" class="block text-sm font-medium text-gray-700">Link to Design (Optional if file uploaded)</label>
-                            <input type="url" id="designLink" placeholder="Thingiverse, Printables, etc." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                            <div class="col-span-1">
-                                <label for="quantity" class="block text-sm font-medium text-gray-700">Qty</label>
-                                <input type="number" id="quantity" min="1" value="1" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
-                            </div>
-                            
-                            <!-- 3D Print Options -->
-                            <div id="print-options-group" class="col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                <div class="col-span-1">
-                                    <label for="material" class="block text-sm font-medium text-gray-700">Material</label>
-                                    <select id="material" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
-                                        <option value="PLA">PLA</option>
-                                        <option value="PETG">PETG</option>
-                                        <option value="Polycarbonate">Polycarbonate</option>
-                                        <option value="TPU">TPU</option>
-                                    </select>
-                                </div>
-                                <div class="col-span-1">
-                                    <label for="color" class="block text-sm font-medium text-gray-700">Colour</label>
-                                    <select id="color" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
-                                    </select>
-                                </div>
-                                <div class="col-span-1">
-                                    <label for="infill" class="block text-sm font-medium text-gray-700">Infill Density</label>
-                                    <select id="infill" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
-                                        <option value="Unsure">Unsure (Recommend)</option>
-                                        <option value="15%">15% (Standard)</option>
-                                        <option value="30%">30% (Sturdy)</option>
-                                        <option value="50%">50% (High Strength)</option>
-                                        <option value="100%">100% (Solid)</option>
-                                    </select>
-                                </div>
-                                <div class="col-span-1 sm:col-span-3">
-                                    <label for="multicolor" class="block text-sm font-medium text-gray-700">Multicolor Print?</label>
-                                    <select id="multicolor" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
-                                        <option value="No">No</option>
-                                        <option value="Yes">Yes</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Lithophane Options -->
-                            <div id="litho-options-group" class="col-span-3 hidden flex items-center">
-                                <p class="text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-md p-3 w-full">
-                                    <strong>Lithophane Size:</strong> 150x124mm frame (126x100mm picture)<br/>
-                                    <span class="text-xs text-gray-500">Printed in high-quality white material for light transmission.</span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div id="multicolor-desc-container" class="hidden">
-                            <label for="multicolorDesc" class="block text-sm font-medium text-gray-700">Describe Multicolor Requirements</label>
-                            <textarea id="multicolorDesc" rows="2" placeholder="E.g., Base in black, text in white..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"></textarea>
-                        </div>
-
-                        <div>
-                            <label for="comments" class="block text-sm font-medium text-gray-700">Special Requests / Notes</label>
-                            <textarea id="comments" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"></textarea>
-                        </div>
-                        
-                        <button type="submit" id="submit-btn" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                            Submit for Quote
-                        </button>
-                    </form>
-                </div>
             </div>
+
+            <!-- User Form -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex-grow">
+                <h3 class="text-lg font-medium text-gray-900 border-b pb-2 mb-4">Request a Quote</h3>
+                <form id="quote-form" class="space-y-4">
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <input type="text" id="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Phone (Optional)</label>
+                            <input type="tel" id="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input type="email" id="email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                    </div>
+
+                    <div>
+                        <label for="address" class="block text-sm font-medium text-gray-700">Address (For Postage Estimation)</label>
+                        <textarea id="address" required rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"></textarea>
+                    </div>
+
+                    <div>
+                        <label for="designLink" class="block text-sm font-medium text-gray-700">Link to Design (Optional if file uploaded)</label>
+                        <input type="url" id="designLink" placeholder="Thingiverse, Printables, etc." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="col-span-1">
+                            <label for="quantity" class="block text-sm font-medium text-gray-700">Qty</label>
+                            <input type="number" id="quantity" min="1" value="1" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                        </div>
+                        
+                        <!-- 3D Print Options (Hidden in Litho mode) -->
+                        <div id="print-options-group" class="col-span-3 grid grid-cols-3 gap-4">
+                            <div class="col-span-1">
+                                <label for="material" class="block text-sm font-medium text-gray-700">Material</label>
+                                <select id="material" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
+                                    <option value="PLA">PLA</option>
+                                    <option value="PETG">PETG</option>
+                                    <option value="Polycarbonate">Polycarbonate</option>
+                                    <option value="TPU">TPU</option>
+                                </select>
+                            </div>
+                            <div class="col-span-1">
+                                <label for="color" class="block text-sm font-medium text-gray-700">Colour</label>
+                                <select id="color" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
+                                    <!-- Options dynamically injected by JS based on material -->
+                                </select>
+                            </div>
+                            <div class="col-span-1">
+                                <label for="multicolor" class="block text-sm font-medium text-gray-700">Multicolor?</label>
+                                <select id="multicolor" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Lithophane Options (Hidden in 3D mode) -->
+                        <div id="litho-options-group" class="col-span-3 hidden flex items-center">
+                            <p class="text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-md p-2 w-full">
+                                <strong>Lithophane Size:</strong> 150x124mm frame (126x100mm picture)<br/>
+                                <span class="text-xs">Printed in high-quality white material for light transmission.</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Infill Density Dropdown (3D Print Mode Only) -->
+                    <div id="infill-container">
+                        <label for="infill" class="block text-sm font-medium text-gray-700">Infill Density (Internal Strength)</label>
+                        <select id="infill" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
+                            <option value="Unsure">Unsure (Recommend for me)</option>
+                            <option value="15%">15% (Standard / Decorative)</option>
+                            <option value="30%">30% (Sturdy / Functional)</option>
+                            <option value="50%">50% (High Strength)</option>
+                            <option value="100%">100% (Solid / Max Strength)</option>
+                        </select>
+                    </div>
+
+                    <div id="multicolor-desc-container" class="hidden">
+                        <label for="multicolorDesc" class="block text-sm font-medium text-gray-700">Describe Multicolor Requirements</label>
+                        <textarea id="multicolorDesc" rows="2" placeholder="E.g., Base in black, text in white..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"></textarea>
+                    </div>
+
+                    <div>
+                        <label for="comments" class="block text-sm font-medium text-gray-700">Special Requests / Notes</label>
+                        <textarea id="comments" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"></textarea>
+                    </div>
+                    
+                    <button type="submit" id="submit-btn" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        Submit for Quote
+                    </button>
+                </form>
+            </div>
+        </div>
         </div>
     </main>
 
@@ -271,10 +271,11 @@
             const uploadHint = document.getElementById('upload-hint');
             const printOptions = document.getElementById('print-options-group');
             const lithoOptions = document.getElementById('litho-options-group');
+            const infillContainer = document.getElementById('infill-container');
             const canvasContainer = document.getElementById('canvas-container');
             const imagePreview = document.getElementById('image-preview');
             const viewerOverlayText = document.querySelector('#viewer-overlay p');
-            const designLinkGroup = document.getElementById('design-link-group');
+            const designLinkInput = document.getElementById('designLink').parentElement;
 
             // Reset current file on mode switch
             currentFile = null;
@@ -292,9 +293,10 @@
                 uploadHint.innerText = "Currently supporting STL files up to 15MB (Optional if providing a Link to Design)";
                 printOptions.classList.remove('hidden');
                 lithoOptions.classList.add('hidden');
+                infillContainer.classList.remove('hidden');
                 canvasContainer.style.display = 'block';
                 viewerOverlayText.innerText = "Upload a model to preview";
-                designLinkGroup.style.display = 'block';
+                designLinkInput.style.display = 'block';
                 
                 document.getElementById('dim-x').innerText = "X: --";
                 document.getElementById('dim-y').innerText = "Y: --";
@@ -306,15 +308,17 @@
                 uploadHint.innerText = "Upload an image (JPG, PNG) for your lithophane.";
                 printOptions.classList.add('hidden');
                 lithoOptions.classList.remove('hidden');
+                infillContainer.classList.add('hidden');
                 canvasContainer.style.display = 'none';
                 viewerOverlayText.innerText = "Upload an image to preview";
-                designLinkGroup.style.display = 'none'; // Lithophane requires image upload
+                designLinkInput.style.display = 'none'; // Lithos require a file
                 
                 document.getElementById('dim-x').innerText = "X: 150.00";
                 document.getElementById('dim-y').innerText = "Y: 124.00";
                 document.getElementById('dim-z').innerText = "Z: 5.00";
-                document.getElementById('volume-display').innerHTML = 'N/A';
+                document.getElementById('volume-display').innerHTML = 'N/A <span class="text-sm font-medium text-gray-500"></span>';
                 
+                // Hide multicolor desc if it was open
                 document.getElementById('multicolor-desc-container').classList.add('hidden');
             }
         }
@@ -324,15 +328,17 @@
             const acceptBtn = document.getElementById('tc-accept-btn');
             const declineBtn = document.getElementById('tc-decline-btn');
 
+            // Check if user has already accepted the T&Cs in this browser
             if (!localStorage.getItem('clickandprint3d_tc_accepted')) {
                 modal.classList.remove('hidden');
+                // Prevent scrolling on the body while modal is open
                 document.body.style.overflow = 'hidden';
             }
 
             acceptBtn.addEventListener('click', () => {
                 localStorage.setItem('clickandprint3d_tc_accepted', 'true');
                 modal.classList.add('hidden');
-                document.body.style.overflow = '';
+                document.body.style.overflow = ''; // Restore scrolling capability
             });
 
             declineBtn.addEventListener('click', () => {
@@ -367,6 +373,10 @@
             directionalLight.position.set(100, 200, 50);
             directionalLight.castShadow = true;
             scene.add(directionalLight);
+            
+            const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            fillLight.position.set(-100, 0, -50);
+            scene.add(fillLight);
 
             window.addEventListener('resize', onWindowResize, false);
         }
@@ -423,11 +433,6 @@
             if (files.length === 0) return;
             const file = files[0];
             const extension = file.name.split('.').pop().toLowerCase();
-
-            if (file.size > 15 * 1024 * 1024) {
-                showToast("File size exceeds 15MB limit. Please upload a smaller file.", true);
-                return;
-            }
             
             if (currentMode === '3d') {
                 if (extension !== 'stl') {
@@ -437,7 +442,7 @@
                 processSTLFile(file);
             } else if (currentMode === 'litho') {
                 if (!['jpg', 'jpeg', 'png', 'webp'].includes(extension)) {
-                    showToast("Please upload an image (JPG, PNG) for Lithophanes.", true);
+                    showToast("Please upload a valid image (JPG, PNG) for Lithophanes.", true);
                     return;
                 }
                 processImageFile(file);
@@ -503,6 +508,7 @@
                 modelVolumeCm3 = volumeMm3 / 1000;
 
                 updateUIStats();
+
                 geometry.center();
                 
                 const radius = geometry.boundingSphere.radius;
@@ -559,12 +565,14 @@
             const form = document.getElementById('quote-form');
             const submitBtn = document.getElementById('submit-btn');
             
+            // UI elements for dynamic behavior
             const materialSelect = document.getElementById('material');
             const colorSelect = document.getElementById('color');
             const multicolorSelect = document.getElementById('multicolor');
             const multicolorDescContainer = document.getElementById('multicolor-desc-container');
             const designLinkInput = document.getElementById('designLink');
 
+            // 1. Dynamic Color Configuration
             const colorsByMaterial = {
                 'PLA': ['Red', 'White', 'Black', 'Cyan', 'Dark Blue'],
                 'PETG': ['Black'],
@@ -575,7 +583,7 @@
             function updateColors() {
                 const material = materialSelect.value;
                 const colors = colorsByMaterial[material] || [];
-                colorSelect.innerHTML = '';
+                colorSelect.innerHTML = ''; // Clear current options
                 
                 colors.forEach(color => {
                     const option = document.createElement('option');
@@ -585,9 +593,11 @@
                 });
             }
 
+            // Listen for material changes and run once on load
             materialSelect.addEventListener('change', updateColors);
             updateColors();
 
+            // 2. Multicolor Toggle Logic
             multicolorSelect.addEventListener('change', (e) => {
                 if (e.target.value === 'Yes') {
                     multicolorDescContainer.classList.remove('hidden');
@@ -599,11 +609,13 @@
                 }
             });
 
+            // 3. Handle form submission
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
-                const designLink = designLinkInput ? designLinkInput.value.trim() : '';
+                const designLink = designLinkInput.value.trim();
 
+                // Validation: Lithophane MUST have a file. 3D must have file OR link.
                 if (currentMode === 'litho' && !currentFile) {
                     showToast("Please upload an image for your Lithophane.", true);
                     return;
@@ -613,26 +625,34 @@
                     return;
                 }
 
-                if (webAppUrl === "https://script.google.com/macros/s/AKfycbz6vUClzkNbTeZrB20v7vQsTxohM6dxlcwXtMxZLM97UHmzC37ZTKgRm1ZkIvg1kygOtA/exec" || !webAppUrl.startsWith("https://script.google.com/")) {
-                    showToast("https://script.google.com/macros/s/AKfycbz6vUClzkNbTeZrB20v7vQsTxohM6dxlcwXtMxZLM97UHmzC37ZTKgRm1ZkIvg1kygOtA/exec", true);
+                // Check file size limit for direct upload (15MB)
+                if (currentFile && currentFile.size > 15 * 1024 * 1024) {
+                    showToast("File is too large (>15MB). Please provide a link instead.", true);
+                    return;
+                }
+
+                // Warn user if trying to submit to placeholder link
+                if (webAppUrl === "https://script.google.com/macros/s/AKfycbz6vUClzkNbTeZrB20v7vQsTxohM6dxlcwXtMxZLM97UHmzC37ZTKgRm1ZkIvg1kygOtA/exec") {
+                    showToast("Configuration required! Please paste your Web App URL in the HTML script first.", true);
                     return;
                 }
 
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 inline-block"></div> Sending Request...';
+                submitBtn.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div> Sending Request...';
 
                 try {
+                    // Prep basic text payload values
                     const payload = {
                         name: document.getElementById('name').value,
                         email: document.getElementById('email').value,
                         phone: document.getElementById('phone').value,
                         address: document.getElementById('address').value,
                         quoteType: currentMode === '3d' ? 'Standard 3D Print' : 'Lithophane',
-                        designLink: currentMode === '3d' ? (designLink || "N/A") : "N/A",
+                        designLink: currentMode === '3d' ? designLink : "N/A",
                         quantity: document.getElementById('quantity').value,
                         material: currentMode === '3d' ? materialSelect.value : "Lithophane PLA/PETG",
                         color: currentMode === '3d' ? colorSelect.value : "White",
-                        infill: currentMode === '3d' ? document.getElementById('infill').value : "100% Solid",
+                        infill: currentMode === '3d' ? document.getElementById('infill').value : "100%",
                         multicolor: currentMode === '3d' ? multicolorSelect.value : "No",
                         multicolorDesc: currentMode === '3d' ? document.getElementById('multicolorDesc').value : "",
                         comments: document.getElementById('comments').value,
@@ -642,6 +662,7 @@
                         fileData: ""
                     };
 
+                    // If a file exists, transform it into Base64 for Drive storage
                     if (currentFile) {
                         const base64Promise = new Promise((resolve, reject) => {
                             const reader = new FileReader();
@@ -652,24 +673,37 @@
                         payload.fileData = await base64Promise;
                     }
 
-                    // CORS-safe fetch request using text/plain header to avoid preflight issues in GAS
+                    // Network POST to Google Web App
                     const response = await fetch(webAppUrl, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'text/plain;charset=utf-8',
+                            'Content-Type': 'text/plain;charset=utf-8'
                         },
                         body: JSON.stringify(payload),
                         redirect: 'follow'
                     });
 
-                    const result = await response.json();
+                    const responseText = await response.text();
+                    let result;
+
+                    try {
+                        result = JSON.parse(responseText);
+                    } catch (parseError) {
+                        console.error("Server HTML/Text Response:", responseText);
+                        if (responseText.includes("Google Drive") || responseText.includes("Authorization")) {
+                            throw new Error("Apps Script authorization required. Run testPermissions in Apps Script.");
+                        } else {
+                            throw new Error("Invalid response from server. Check webAppUrl and script deployment.");
+                        }
+                    }
 
                     if (result.status === 'success') {
-                        showToast("Quote requested successfully!");
+                        showToast(result.message || "Quote requested successfully!");
                         form.reset();
                         updateColors();
                         multicolorDescContainer.classList.add('hidden');
                         
+                        // Clear UI based on mode
                         if (currentMode === '3d') {
                             if (currentMesh) {
                                 scene.remove(currentMesh);
@@ -688,13 +722,14 @@
                         
                         document.getElementById('viewer-overlay').classList.remove('hidden');
                         currentFile = null;
+                        
                     } else {
                         showToast("Failed: " + (result.message || "Please try again later."), true);
                     }
 
                 } catch (error) {
                     console.error("Transmission error:", error);
-                    showToast("Error connecting to server. Check script configuration.", true);
+                    showToast(error.message || "Error connecting to server.", true);
                 } finally {
                     submitBtn.innerText = "Submit for Quote";
                     submitBtn.disabled = false;
@@ -718,8 +753,9 @@
             
             setTimeout(() => {
                 toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3500);
+            }, 3000);
         }
+
     </script>
 </body>
 </html>
